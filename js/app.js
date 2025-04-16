@@ -1,9 +1,9 @@
-import { getModels, getTrims, getCarDetails } from './api.js';
+import { getModels, getTrims, getCarDetails, getCarImage } from './api.js';
 import { renderCarDetails } from './car.js';
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  const hardcodedMakes = ["Toyota", "Ford", "Chevrolet", "Honda", "Jeep", "Nissan", "Kia", "Subaru", "Hyundai", "GMC", "Lexus", "Mazda", "BMW", "Volkswagen", "Cadillac", "Mercedes-Benz", "Acura", "Volvo", "Porsche"];
+  const hardcodedMakes = ["Acura", "BMW", "Buick", "Cadillac", "Chevrolet", "Chrysler", "Dodge", "Ford", "GMC", "Genesis", "Honda", "Hyundai", "Infiniti", "Jeep", "Kia", "Lexus", "Lincoln", "Mazda", "Mercedes-Benz", "Mini", "Nissan", "Porsche", "Ram", "Subaru", "Toyota", "Volkswagen", "Volvo"];
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: currentYear - 1990 + 1 }, (_, i) => currentYear - i);
 
@@ -69,6 +69,16 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
+    trimDropdown.addEventListener('change', async () => {
+      const selectedOption = trimDropdown.selectedOptions[0];
+      const modelId = selectedOption?.dataset?.modelId;
+    
+      if (modelId) {
+        const carDetails = await getCarDetails(modelId);
+        renderCarDetails(container, carDetails);
+      }
+    });
+
     // Render car details when trim is selected
     [makeDropdown, modelDropdown, trimDropdown].forEach(dropdown => {
       dropdown.addEventListener('change', () => {
@@ -76,10 +86,18 @@ document.addEventListener("DOMContentLoaded", () => {
         const make = makeDropdown.value;
         const model = modelDropdown.value;
         const trim = trimDropdown.value;
-
+    
         if (year && make && model && trim) {
-          getCarDetails(year, make, model, trim)
-            .then(data => renderCarDetails(container, data));
+          const selectedOption = trimDropdown.options[trimDropdown.selectedIndex];
+          const model_id = selectedOption?.dataset.modelId;
+    
+          if (model_id) {
+            console.log("Selected model_id:", model_id);
+            getCarDetails(model_id)
+              .then(data => renderCarDetails(container, data));
+          } else {
+            console.warn('No model_id found for selected trim');
+          }
         }
       });
     });

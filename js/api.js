@@ -19,7 +19,7 @@ export async function getModels(year, make, modelDropdownId) {
     modelDropdown.innerHTML = '';
     
     const defaultOption = document.createElement('option');
-    defaultOption.text = 'Select a model';
+    defaultOption.text = 'Select Model';
     defaultOption.value = '';
     modelDropdown.appendChild(defaultOption);
 
@@ -53,7 +53,7 @@ export async function getTrims(year, make, model, trimDropdownId) {
     trimDropdown.innerHTML = '';
 
     const defaultOption = document.createElement('option');
-    defaultOption.text = 'Select a trim';
+    defaultOption.text = 'Select Trim';
     defaultOption.value = '';
     trimDropdown.appendChild(defaultOption);
 
@@ -61,6 +61,7 @@ export async function getTrims(year, make, model, trimDropdownId) {
       const option = document.createElement('option');
       option.text = trim.model_trim || 'Base';
       option.value = trim.model_trim;
+      option.dataset.modelId = trim.model_id;
       trimDropdown.appendChild(option);
     });
 
@@ -70,9 +71,9 @@ export async function getTrims(year, make, model, trimDropdownId) {
 }
 
 
-export async function getCarDetails(year, make, model, trim) {
+export async function getCarDetails(model_id) {
   try {
-    const url = `/api/0.3/?cmd=getModel&model=${model}`;
+    const url = `/api/0.3/?cmd=getModel&model=${model_id}`;
     console.log('Fetching car details from:', url);
     const response = await fetch(url);
 
@@ -96,6 +97,26 @@ export async function getCarDetails(year, make, model, trim) {
     return {};
   }
 }
+
+// api.js
+export async function getCarImage(make, model, year) {
+  try {
+    const response = await fetch(`https://www.carimagery.com/api.asmx/GetImageUrl?searchTerm=${year}+${make}+${model}`);
+    const data = await response.text(); // returns XML response
+
+    // Parse the XML and extract the image URL
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(data, "text/xml");
+    const imageUrl = xmlDoc.getElementsByTagName("string")[0].textContent;
+
+    return imageUrl;
+  } catch (error) {
+    console.error('Error fetching car image:', error);
+    return null;
+  }
+}
+
+
 
 
 
