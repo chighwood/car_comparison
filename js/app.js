@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (year && make) {
         getModels(year, make, `modelDropdown${num}`);
         trimDropdown.innerHTML = '<option value="">Select Trim</option>';
-        container.innerHTML = '';  // Clear car details when year or make changes
+        container.innerHTML = '';
       }
     });
 
@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (year && make) {
         getModels(year, make, `modelDropdown${num}`);
         trimDropdown.innerHTML = '<option value="">Select Trim</option>';
-        container.innerHTML = '';  // Clear car details when make changes
+        container.innerHTML = '';
       }
     });
 

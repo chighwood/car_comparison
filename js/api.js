@@ -1,7 +1,7 @@
 export async function getModels(year, make, modelDropdownId) {
   try {
     const url = `/api/0.3/?cmd=getModels&make=${make}&year=${year}&sold_in_us=1`;
-    console.log('Requesting URL:', url);  // Log the URL to verify it
+    console.log('Requesting URL:', url);
     
     // Fetch data from the CarQuery API via the Vite proxy
     const response = await fetch(url);
@@ -16,7 +16,7 @@ export async function getModels(year, make, modelDropdownId) {
     const models = jsonData.Models;
     
     const modelDropdown = document.getElementById(modelDropdownId);
-    modelDropdown.innerHTML = ''; // Clear the dropdown
+    modelDropdown.innerHTML = '';
     
     const defaultOption = document.createElement('option');
     defaultOption.text = 'Select a model';
@@ -73,19 +73,19 @@ export async function getTrims(year, make, model, trimDropdownId) {
 export async function getCarDetails(year, make, model, trim) {
   try {
     const url = `/api/0.3/?cmd=getModel&model=${model}`;
-    console.log('Fetching car details from:', url); // Add this log for debugging
+    console.log('Fetching car details from:', url);
     const response = await fetch(url);
 
     if (!response.ok) {
-      console.error('API request failed with status:', response.status); // Add more error logging
+      console.error('API request failed with status:', response.status);
       throw new Error(`API request failed with status: ${response.status}`);
     }
 
     const data = await response.json();
-    console.log('Car details response data:', data); // Log the response data
+    console.log('Car details response data:', data);
 
     if (data && data.length > 0) {
-      return data[0]; // The API returns car details as an array, so take the first element
+      return data[0];
     } else {
       console.error('No car details returned from API');
       throw new Error('No car details found');
@@ -93,7 +93,7 @@ export async function getCarDetails(year, make, model, trim) {
 
   } catch (error) {
     console.error('Error fetching car details:', error);
-    return {}; // Return empty object in case of error
+    return {};
   }
 }
 

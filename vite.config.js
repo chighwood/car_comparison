@@ -5,8 +5,8 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://www.carqueryapi.com',  // External API URL
-        changeOrigin: true,  // Adjust headers if needed
+        target: 'https://www.carqueryapi.com',
+        changeOrigin: true,
         secure: true,
       }
     }
