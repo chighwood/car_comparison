@@ -6,16 +6,14 @@ import { fileURLToPath } from 'url';
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Needed for __dirname with ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Serve static files from Vite's build
 app.use(express.static(path.join(__dirname, '../dist')));
 
-// Proxy API requests
 app.use('/api', async (req, res) => {
-  const apiUrl = `https://www.carqueryapi.com${req.originalUrl}`;
+  const apiUrl = `https://www.carqueryapi.com/api${req.url}`;
+  console.log('Proxying request to:', apiUrl);
   try {
     const response = await fetch(apiUrl);
     const data = await response.text();
@@ -26,7 +24,6 @@ app.use('/api', async (req, res) => {
   }
 });
 
-// Fallback to index.html for SPA routing
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
@@ -34,3 +31,4 @@ app.get('*', (req, res) => {
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+
