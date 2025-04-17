@@ -1,3 +1,4 @@
+// vite.config.js
 import { defineConfig } from 'vite';
 
 export default defineConfig({
@@ -7,9 +8,7 @@ export default defineConfig({
         target: 'https://www.carqueryapi.com',
         changeOrigin: true,
         secure: true,
-        rewrite: (path) => path.replace(/^\/api/, '/api')
       }
     }
   }
 });
-

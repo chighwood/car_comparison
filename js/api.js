@@ -1,90 +1,53 @@
-// export async function getModels(year, make, modelDropdownId) {
-//   try {
-//     const url = `/api/0.3/?cmd=getModels&make=${make}&year=${year}&sold_in_us=1`;
-//     console.log('Requesting URL:', url);
+export async function getModels(year, make, modelDropdownId) {
+  try {
+    const baseURL = import.meta.env.PROD 
+      ? 'https://car-comparison-3oi7.onrender.com/api' 
+      : '/api';
+      
+    const url = `${baseURL}/0.3/?cmd=getModels&make=${make}&year=${year}&sold_in_us=1`;
+    console.log('Requesting URL:', url);
     
-//     // Fetch data from the CarQuery API via the Vite proxy
-//     const response = await fetch(url);
-//     console.log(url);
+    // Fetch data from the CarQuery API via the Vite proxy
+    const response = await fetch(url);
+    console.log(url);
     
-//     if (!response.ok) {
-//       console.error('Failed request with status:', response.status);
-//       throw new Error(`API request failed with status: ${response.status}`);
-//     }
-
-//     const jsonData = await response.json();
-//     const models = jsonData.Models;
-    
-//     const modelDropdown = document.getElementById(modelDropdownId);
-//     modelDropdown.innerHTML = '';
-    
-//     const defaultOption = document.createElement('option');
-//     defaultOption.text = 'Select Model';
-//     defaultOption.value = '';
-//     modelDropdown.appendChild(defaultOption);
-
-//     // Populate the dropdown with the models
-//     models.forEach(model => {
-//       const option = document.createElement('option');
-//       option.text = model.model_name;
-//       option.value = model.model_name;
-//       modelDropdown.appendChild(option);
-//     });
-
-//   } catch (error) {
-//     console.error('Error fetching models:', error);
-//   }
-// }
-
-  export async function getModels(year, make, modelDropdownId) {
-    try {
-      const url = `/api/0.3/?cmd=getModels&make=${make}&year=${year}&sold_in_us=1`;
-      console.log('Requesting URL:', url);
-
-      const response = await fetch(url);
-      if (!response.ok) {
-        console.error('Failed request with status:', response.status);
-        throw new Error(`API request failed with status: ${response.status}`);
-      }
-
-      // Check if the response is JSON
-      const contentType = response.headers.get('Content-Type');
-      if (!contentType || !contentType.includes('application/json')) {
-        const text = await response.text();
-        console.error('Received non-JSON response:', text);
-        throw new Error('Expected JSON but received something else.');
-      }
-
-      const jsonData = await response.json();
-      const models = jsonData.Models;
-
-      const modelDropdown = document.getElementById(modelDropdownId);
-      modelDropdown.innerHTML = '';
-
-      const defaultOption = document.createElement('option');
-      defaultOption.text = 'Select Model';
-      defaultOption.value = '';
-      modelDropdown.appendChild(defaultOption);
-
-      // Populate the dropdown with the models
-      models.forEach(model => {
-        const option = document.createElement('option');
-        option.text = model.model_name;
-        option.value = model.model_name;
-        modelDropdown.appendChild(option);
-      });
-
-    } catch (error) {
-      console.error('Error fetching models:', error);
+    if (!response.ok) {
+      console.error('Failed request with status:', response.status);
+      throw new Error(`API request failed with status: ${response.status}`);
     }
+
+    const jsonData = await response.json();
+    const models = jsonData.Models;
+    
+    const modelDropdown = document.getElementById(modelDropdownId);
+    modelDropdown.innerHTML = '';
+    
+    const defaultOption = document.createElement('option');
+    defaultOption.text = 'Select Model';
+    defaultOption.value = '';
+    modelDropdown.appendChild(defaultOption);
+
+    // Populate the dropdown with the models
+    models.forEach(model => {
+      const option = document.createElement('option');
+      option.text = model.model_name;
+      option.value = model.model_name;
+      modelDropdown.appendChild(option);
+    });
+
+  } catch (error) {
+    console.error('Error fetching models:', error);
   }
-
-
+}
 
 // Fetch trims based on selected year, make, and model
 export async function getTrims(year, make, model, trimDropdownId) {
   try {
-    const url = `/api/0.3/?cmd=getTrims&make=${make}&year=${year}&model=${model}&sold_in_us=1`;
+    const baseURL = import.meta.env.PROD 
+    ? 'https://car-comparison-3oi7.onrender.com/api' 
+    : '/api';
+
+    const url = `${baseURL}/0.3/?cmd=getTrims&make=${make}&year=${year}&model=${model}&sold_in_us=1`;
     const response = await fetch(url);
     const text = await response.text();
     const jsonText = text.replace(/^.*?({.*})[^}]*$/, '$1');
@@ -117,7 +80,11 @@ export async function getTrims(year, make, model, trimDropdownId) {
 
 export async function getCarDetails(model_id) {
   try {
-    const url = `/api/0.3/?cmd=getModel&model=${model_id}`;
+    const baseURL = import.meta.env.PROD 
+    ? 'https://car-comparison-3oi7.onrender.com/api' 
+    : '/api';
+
+    const url = `${baseURL}/0.3/?cmd=getModel&model=${model_id}`;
     console.log('Fetching car details from:', url);
     const response = await fetch(url);
 
