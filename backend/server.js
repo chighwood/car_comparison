@@ -1,25 +1,32 @@
-import express from 'express';
-import fetch from 'node-fetch';
-import cors from 'cors';
+const express = require('express');
+const axios = require('axios');
+const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
+app.use(express.json());
 
-app.get('/api/*', async (req, res) => {
-    const proxyPath = req.originalUrl.replace('/api/', ''); 
-    const url = `https://www.carqueryapi.com/${proxyPath}`;
-  
-    try {
-      const response = await fetch(url);
-      const data = await response.text();
-      res.send(data);
-    } catch (error) {
-      console.error('Proxy error:', error);
-      res.status(500).send('Error fetching data from external API');
-    }
-  });  
+// Proxy all API calls to CarQuery API
+app.use('/api', async (req, res) => {
+  const carQueryBaseURL = 'https://www.carqueryapi.com/api/0.3/';
+
+  try {
+    // Rebuild query string and full target URL
+    const queryParams = new URLSearchParams(req.query).toString();
+    const fullUrl = `${carQueryBaseURL}?${queryParams}`;
+
+    console.log('Proxying to:', fullUrl);
+    const response = await axios.get(fullUrl);
+
+    res.setHeader('Content-Type', 'application/json');
+    res.send(response.data);
+  } catch (error) {
+    console.error('Proxy Error:', error.message);
+    res.status(500).json({ error: 'Proxy request failed' });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Proxy server running on port ${PORT}`);
