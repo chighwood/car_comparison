@@ -1,6 +1,5 @@
 import express from 'express';
 import path from 'path';
-import { createProxyMiddleware } from 'http-proxy-middleware';
 
 const app = express();
 const PORT = process.env.PORT || 5500;
@@ -12,12 +11,20 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'dist')));
 
 // API Proxy
-app.use('/api', createProxyMiddleware({
-  target: 'https://www.carqueryapi.com',
-  changeOrigin: true,
-  pathRewrite: { '^/api': '' },
-  secure: true
-}));
+app.use('/api', async (req, res) => {
+    try {
+      console.log('Proxying request to:', req.originalUrl);
+  
+      const apiUrl = `https://www.carqueryapi.com${req.originalUrl.replace(/^\/api/, '')}`;
+      const response = await fetch(apiUrl);
+      const data = await response.text();
+      res.send(data);
+    } catch (err) {
+      console.error('Proxy error:', err);
+      res.status(500).json({ error: 'Proxy failed', details: err.message });
+    }
+  });
+  
 
 // Catch-all Route (modified)
 app.get(/^\/(?!api).*/, (req, res) => {
