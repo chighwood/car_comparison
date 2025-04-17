@@ -1,7 +1,7 @@
 export async function getModels(year, make, modelDropdownId) {
   try {
     const baseURL = import.meta.env.PROD 
-      ? 'https://car-comparison-3oi7.onrender.com/api' 
+      ? 'https://car-comparison-xvq9.onrender.com/api' 
       : '/api';
       
     const url = `${baseURL}/0.3/?cmd=getModels&make=${make}&year=${year}&sold_in_us=1`;
@@ -44,7 +44,7 @@ export async function getModels(year, make, modelDropdownId) {
 export async function getTrims(year, make, model, trimDropdownId) {
   try {
     const baseURL = import.meta.env.PROD 
-    ? 'https://car-comparison-3oi7.onrender.com/api' 
+    ? 'https://car-comparison-xvq9.onrender.com/api' 
     : '/api';
 
     const url = `${baseURL}/0.3/?cmd=getTrims&make=${make}&year=${year}&model=${model}&sold_in_us=1`;
@@ -81,7 +81,7 @@ export async function getTrims(year, make, model, trimDropdownId) {
 export async function getCarDetails(model_id) {
   try {
     const baseURL = import.meta.env.PROD 
-    ? 'https://car-comparison-3oi7.onrender.com/api' 
+    ? 'https://car-comparison-xvq9.onrender.com/api' 
     : '/api';
 
     const url = `${baseURL}/0.3/?cmd=getModel&model=${model_id}`;
