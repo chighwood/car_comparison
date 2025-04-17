@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 
-app.get('/api/:proxyPath(*)', async (req, res) => {
+app.get('/api/:proxyPath*', async (req, res) => {
   const proxyPath = req.params.proxyPath;
   const extraQuery = req.url.split(proxyPath)[1] || '';
   const carQueryUrl = `https://www.carqueryapi.com/${proxyPath}${extraQuery}`;
