@@ -1,33 +1,25 @@
-const express = require('express');
-const axios = require('axios');
-const cors = require('cors');
+import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
-app.use(express.json());
+// Needed for __dirname in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// Proxy all API calls to CarQuery API
-app.use('/api', async (req, res) => {
-  const carQueryBaseURL = 'https://www.carqueryapi.com/api/0.3/';
+// Go up one level to the project root where index.html is
+const rootDir = path.join(__dirname, '..');
 
-  try {
-    // Rebuild query string and full target URL
-    const queryParams = new URLSearchParams(req.query).toString();
-    const fullUrl = `${carQueryBaseURL}?${queryParams}`;
+// Serve static files (css, js, images, etc.)
+app.use(express.static(rootDir));
 
-    console.log('Proxying to:', fullUrl);
-    const response = await axios.get(fullUrl);
-
-    res.setHeader('Content-Type', 'application/json');
-    res.send(response.data);
-  } catch (error) {
-    console.error('Proxy Error:', error.message);
-    res.status(500).json({ error: 'Proxy request failed' });
-  }
+// Serve index.html for root route or any unknown route
+app.get('*', (req, res) => {
+  res.sendFile(path.join(rootDir, 'index.html'));
 });
 
 app.listen(PORT, () => {
-  console.log(`Proxy server running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
