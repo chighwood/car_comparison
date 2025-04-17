@@ -71,7 +71,7 @@ export async function getTrims(year, make, model, trimDropdownId) {
   }
 }
 
-
+// Get car detials 
 export async function getCarDetails(model_id) {
   try {
 
@@ -100,7 +100,6 @@ export async function getCarDetails(model_id) {
   }
 }
 
-// api.js
 export async function getCarImage(make, model, year) {
   try {
     const response = await fetch(`https://www.carimagery.com/api.asmx/GetImageUrl?searchTerm=${year}+${make}+${model}`);
