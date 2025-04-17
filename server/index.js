@@ -9,13 +9,12 @@ const port = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Serve static files from the dist folder
+// Serve static files from Vite build
 app.use(express.static(path.join(__dirname, '../dist')));
 
-// Proxy API requests to CarQuery API
-app.all('/api/*', async (req, res) => {
-  const apiPath = req.url.replace('/api', '');
-  const apiUrl = `https://www.carqueryapi.com/api${apiPath}`;
+// Proxy route - using exact route string (no pattern regex issue)
+app.get('/api/*', async (req, res) => {
+  const apiUrl = `https://www.carqueryapi.com/api${req.originalUrl.replace('/api', '')}`;
   console.log('Proxying request to:', apiUrl);
   try {
     const response = await fetch(apiUrl);
@@ -27,11 +26,12 @@ app.all('/api/*', async (req, res) => {
   }
 });
 
-// Handle SPA fallback for client-side routing
+// Catch-all route for SPA support
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
+// Start server
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
