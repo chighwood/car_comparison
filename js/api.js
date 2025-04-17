@@ -1,6 +1,9 @@
 export async function getModels(year, make, modelDropdownId) {
   try {
-    const url = `/api/0.3/?cmd=getModels&make=${make}&year=${year}&sold_in_us=1`;
+    const isLocal = location.hostname === 'localhost';
+    const baseUrl = isLocal ? '/api/0.3' : 'https://www.carqueryapi.com/api/0.3';
+
+    const url = `${baseUrl}?cmd=getModels&make=${make}&year=${year}&sold_in_us=1`;
     console.log('Requesting URL:', url);
     
     // Fetch data from the CarQuery API via the Vite proxy
@@ -102,7 +105,7 @@ export async function getCarDetails(model_id) {
 export async function getCarImage(make, model, year) {
   try {
     const response = await fetch(`https://www.carimagery.com/api.asmx/GetImageUrl?searchTerm=${year}+${make}+${model}`);
-    const data = await response.text(); // returns XML response
+    const data = await response.text();
 
     // Parse the XML and extract the image URL
     const parser = new DOMParser();
