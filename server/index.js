@@ -9,10 +9,13 @@ const port = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Serve static files from the dist folder
 app.use(express.static(path.join(__dirname, '../dist')));
 
-app.use('/api', async (req, res) => {
-  const apiUrl = `https://www.carqueryapi.com/api${req.url}`;
+// Proxy API requests to CarQuery API
+app.all('/api/*', async (req, res) => {
+  const apiPath = req.url.replace('/api', '');
+  const apiUrl = `https://www.carqueryapi.com/api${apiPath}`;
   console.log('Proxying request to:', apiUrl);
   try {
     const response = await fetch(apiUrl);
@@ -24,6 +27,7 @@ app.use('/api', async (req, res) => {
   }
 });
 
+// Handle SPA fallback for client-side routing
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
@@ -31,4 +35,3 @@ app.get('*', (req, res) => {
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
-
