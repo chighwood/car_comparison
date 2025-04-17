@@ -10,7 +10,7 @@ const rootDir = path.join(__dirname, '..');
 app.use(express.static(rootDir));
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(rootDir, 'index.html'));
+  res.sendFile(path.join(rootDir, 'dist', 'index.html'));
 });
 
 app.listen(PORT, () => {
