@@ -1,9 +1,6 @@
 export async function getModels(year, make, modelDropdownId) {
   try {
-    const isLocal = location.hostname === 'localhost';
-    const baseUrl = isLocal ? '/api/0.3' : 'https://www.carqueryapi.com/api/0.3';
-
-    const url = `${baseUrl}?cmd=getModels&make=${make}&year=${year}&sold_in_us=1`;
+    const url = `/api/0.3/?cmd=getModels&make=${make}&year=${year}&sold_in_us=1`;
     console.log('Requesting URL:', url);
     
     // Fetch data from the CarQuery API via the Vite proxy
