@@ -1,10 +1,7 @@
 export async function getModels(year, make, modelDropdownId) {
   try {
-    const baseURL = import.meta.env.PROD 
-      ? 'https://car-comparison-xvq9.onrender.com/api' 
-      : '/api';
-      
-    const url = `${baseURL}/0.3/?cmd=getModels&make=${make}&year=${year}&sold_in_us=1`;
+
+    const url = `/api/0.3/?cmd=getModels&make=${make}&year=${year}&sold_in_us=1`;
     console.log('Requesting URL:', url);
     
     // Fetch data from the CarQuery API via the Vite proxy
@@ -43,11 +40,8 @@ export async function getModels(year, make, modelDropdownId) {
 // Fetch trims based on selected year, make, and model
 export async function getTrims(year, make, model, trimDropdownId) {
   try {
-    const baseURL = import.meta.env.PROD 
-    ? 'https://car-comparison-xvq9.onrender.com/api' 
-    : '/api';
 
-    const url = `${baseURL}/0.3/?cmd=getTrims&make=${make}&year=${year}&model=${model}&sold_in_us=1`;
+    const url = `/api/0.3/?cmd=getTrims&make=${make}&year=${year}&model=${model}&sold_in_us=1`;
     const response = await fetch(url);
     const text = await response.text();
     const jsonText = text.replace(/^.*?({.*})[^}]*$/, '$1');
@@ -80,11 +74,8 @@ export async function getTrims(year, make, model, trimDropdownId) {
 
 export async function getCarDetails(model_id) {
   try {
-    const baseURL = import.meta.env.PROD 
-    ? 'https://car-comparison-xvq9.onrender.com/api' 
-    : '/api';
 
-    const url = `${baseURL}/0.3/?cmd=getModel&model=${model_id}`;
+    const url = `/api/0.3/?cmd=getModel&model=${model_id}`;
     console.log('Fetching car details from:', url);
     const response = await fetch(url);
 
