@@ -1,4 +1,4 @@
-// server.js (Node/Express)
+// backend/server.js
 import express from 'express';
 import fetch from 'node-fetch';
 import cors from 'cors';
@@ -8,14 +8,16 @@ const PORT = process.env.PORT || 5500;
 
 app.use(cors());
 
+// Proxy all requests to CarQuery API
 app.get('/api/*', async (req, res) => {
-  const carQueryUrl = `https://www.carqueryapi.com/${req.originalUrl.replace('/api/', '')}`;
+  const carQueryUrl = `https://www.carqueryapi.com${req.originalUrl.replace('/api', '')}`;
   try {
     const response = await fetch(carQueryUrl);
     const text = await response.text();
-    res.send(text); // send it back as-is
+    res.send(text); // Forward raw text
   } catch (error) {
-    res.status(500).json({ error: 'Proxy error', detail: error.toString() });
+    console.error('Proxy error:', error);
+    res.status(500).json({ error: 'Proxy failed', detail: error.toString() });
   }
 });
 
