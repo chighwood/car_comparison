@@ -9,7 +9,7 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "start": "node server/index.js",
+    "start": "node index.js",
     "prestart": "npm run build"
   },
   "keywords": [],
