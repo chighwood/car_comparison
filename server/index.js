@@ -9,17 +9,21 @@ import { fileURLToPath } from 'url';
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Enable CORS for all requests (you may want to configure this for more security)
+// Enable CORS for all requests
 app.use(cors());
 
-// Middleware to parse JSON bodies (if needed)
+// Middleware to parse JSON bodies
 app.use(express.json());
 
 // === Proxy Route ===
 app.get('/api/0.3', async (req, res) => {
   const { cmd, make, model, year, sold_in_us } = req.query;
 
-  // Construct the URL to forward to the CarQuery API
+  if (!cmd || !sold_in_us) {
+    return res.status(400).send('Missing required query parameters');
+  }
+
+  // Construct the API URL with query params
   let apiUrl = `https://www.carqueryapi.com/api/0.3/?cmd=${cmd}&sold_in_us=${sold_in_us}`;
   
   if (make) apiUrl += `&make=${make}`;
@@ -28,11 +32,9 @@ app.get('/api/0.3', async (req, res) => {
 
   try {
     const response = await fetch(apiUrl);
-
     if (!response.ok) {
       return res.status(response.status).send('Error with CarQuery API');
     }
-
     const data = await response.json();
     res.json(data);
   } catch (error) {
@@ -41,13 +43,14 @@ app.get('/api/0.3', async (req, res) => {
   }
 });
 
+
 // === Serve Frontend ===
 
-// Set __dirname with ESM (because you're using import/export)
+// Set __dirname with ESM 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Serve static files from dist (Vite's build output)
+// Serve static files from dist
 app.use(express.static(path.join(__dirname, '../dist')));
 
 // SPA Fallback: redirect all unmatched routes to index.html
