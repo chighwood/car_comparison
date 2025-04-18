@@ -2,23 +2,20 @@
 import express from 'express';
 import fetch from 'node-fetch';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 // Initialize the Express app
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // Enable CORS for all requests (you may want to configure this for more security)
 app.use(cors());
 
-// Serve the root path with a simple message
-app.get('/', (req, res) => {
-  res.send('Welcome to the Proxy Server!');
-});
-
 // Middleware to parse JSON bodies (if needed)
 app.use(express.json());
 
-// Proxy route for fetching data from the CarQuery API
+// === Proxy Route ===
 app.get('/api/0.3', async (req, res) => {
   const { cmd, make, model, year, sold_in_us } = req.query;
 
@@ -30,17 +27,13 @@ app.get('/api/0.3', async (req, res) => {
   if (year) apiUrl += `&year=${year}`;
 
   try {
-    // Forward the request to the CarQuery API
     const response = await fetch(apiUrl);
 
     if (!response.ok) {
       return res.status(response.status).send('Error with CarQuery API');
     }
 
-    // Parse the response as JSON
     const data = await response.json();
-
-    // Send the data back to the frontend
     res.json(data);
   } catch (error) {
     console.error('Error during API request:', error);
@@ -48,8 +41,22 @@ app.get('/api/0.3', async (req, res) => {
   }
 });
 
+// === Serve Frontend ===
+
+// Set __dirname with ESM (because you're using import/export)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Serve static files from dist (Vite's build output)
+app.use(express.static(path.join(__dirname, '../dist')));
+
+// SPA Fallback: redirect all unmatched routes to index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../dist/index.html'));
+});
+
 // Start the server
 app.listen(port, () => {
-  console.log(`Proxy server is running at http://localhost:${port}`);
+  console.log(`Server is running at http://localhost:${port}`);
 });
-// This server will now listen for requests on port 3000 and forward them to the CarQuery API.
+// This server will now handle API requests to the CarQuery API and serve the frontend files from the dist directory.
