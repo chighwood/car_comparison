@@ -3,8 +3,12 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   server: {
     proxy: {
-      '/api': {target: 'http://localhost:3000',
-        // target: 'http://www.carqueryapi.com',
+      
+      '/api': 
+      // Web address for tyring to access the API using a backend server
+      // {target: 'http://localhost:3000',
+      // For use when using vite directly
+        {target: 'http://www.carqueryapi.com',
         changeOrigin: true,
 
       }
